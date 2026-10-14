@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Placement Drives | Campus2Career</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Page owner: Student 3 -->
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+ <div class="container header-inner">
+  <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html" aria-current="page">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
+ </div>
+</header>
+<main id="main">
+
+<div class="container">
+ <h1 class="page-title">Placement Drives</h1>
+ <p class="lead">Your details for eligibility: CGPA 7.8, 0 backlogs, CSE.</p>
+ <div class="card form-grid" style="margin-bottom:18px;grid-template-columns:2fr 1fr 1fr">
+  <div class="form-group"><label for="q">Search company or role</label><input id="q" type="search" placeholder="e.g. Infosys"></div>
+  <div class="form-group"><label for="fType">Type</label><select id="fType"><option value="">All</option><option>Full-time</option><option>Internship</option></select></div>
+  <div class="form-group"><label for="fElig">Show</label><select id="fElig"><option value="">All drives</option><option value="yes">Only eligible</option></select></div>
+ </div>
+ <p id="count" role="status" aria-live="polite"></p>
+ <div class="grid grid-3" id="driveList"></div>
+</div>
+<dialog id="applyDialog" aria-labelledby="dTitle"><h2 id="dTitle">Confirm Application</h2><p id="dText"></p>
+ <div class="row" style="justify-content:flex-end"><button class="btn btn-outline" id="cancelApply">Cancel</button><button class="btn" id="confirmApply">Apply</button></div></dialog>
+</main>
+<footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="js/main.js"></script>
+<script src="js/drives.js"></script>
+</body>
+</html>

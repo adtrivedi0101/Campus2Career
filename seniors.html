@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seniors' Corner | Campus2Career</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Page owner: Student 4 -->
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+ <div class="container header-inner">
+  <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html" aria-current="page">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
+ </div>
+</header>
+<main id="main">
+
+<div class="container">
+ <h1 class="page-title">Seniors' Corner</h1><p class="lead">Real interview experiences shared by our placed seniors.</p>
+ <div class="card form-grid" style="margin-bottom:18px;grid-template-columns:2fr 1fr">
+  <div class="form-group"><label for="sq">Search by company or senior name</label><input id="sq" type="search" placeholder="e.g. TCS"></div>
+  <div class="form-group"><label for="sd">Difficulty</label><select id="sd"><option value="">All</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
+ </div>
+ <div class="grid grid-2" id="expList"></div>
+ <section class="card" style="margin-top:28px" aria-labelledby="shareH"><h2 id="shareH">Share Your Experience</h2>
+  <form id="shareForm" novalidate><div class="form-grid">
+   <div class="form-group"><label for="xn">Your Name</label><input id="xn"><p class="error" id="xnErr"></p></div>
+   <div class="form-group"><label for="xb">Batch (e.g. 2025)</label><input id="xb" inputmode="numeric"><p class="error" id="xbErr"></p></div>
+   <div class="form-group"><label for="xc">Company</label><input id="xc"><p class="error" id="xcErr"></p></div>
+   <div class="form-group"><label for="xr">Role</label><input id="xr"></div>
+   <div class="form-group"><label for="xd">Difficulty</label><select id="xd"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+   <div class="form-group"><label for="xs">Rating</label><select id="xs"><option value="5">5 - Excellent</option><option value="4">4 - Good</option><option value="3">3 - Average</option><option value="2">2 - Poor</option><option value="1">1 - Very poor</option></select></div>
+  </div>
+  <div class="form-group"><label for="xt">Your experience and tips</label><textarea id="xt"></textarea><p class="error" id="xtErr"></p></div>
+  <button class="btn" type="submit">Submit Experience</button></form></section>
+</div>
+</main>
+<footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="js/main.js"></script>
+<script src="js/seniors.js"></script>
+</body>
+</html>

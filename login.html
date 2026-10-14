@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login / Register | Campus2Career</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Page owner: Student 1 -->
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+ <div class="container header-inner">
+  <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html" aria-current="page">Login</a></li></ul></nav>
+ </div>
+</header>
+<main id="main">
+
+<div class="container" style="max-width:520px">
+ <h1 class="page-title">Welcome to Campus2Career</h1>
+ <p class="lead">Login to continue or create a new student account.</p>
+ <div class="card">
+  <div class="tabs" role="tablist">
+   <button class="tab" role="tab" aria-selected="true" data-panel="login-panel">Login</button>
+   <button class="tab" role="tab" aria-selected="false" data-panel="register-panel">Register</button>
+  </div>
+  <div id="login-panel" class="panel">
+   <form id="loginForm" novalidate>
+    <div class="form-group"><label for="lrole">Login as</label>
+     <select id="lrole"><option value="student">Student</option><option value="admin">Admin (Placement Cell)</option></select></div>
+    <div class="form-group"><label for="lemail">College Email</label><input type="email" id="lemail" autocomplete="email" required><p class="error" id="lemailErr"></p></div>
+    <div class="form-group"><label for="lpass">Password</label><input type="password" id="lpass" autocomplete="current-password" required><p class="error" id="lpassErr"></p></div>
+    <div class="form-group"><label><input type="checkbox" id="showPass" style="width:auto"> Show password</label></div>
+    <button class="btn" type="submit">Login</button>
+   </form>
+  </div>
+  <div id="register-panel" class="panel" hidden>
+   <form id="registerForm" novalidate>
+    <div class="form-group"><label for="rname">Full Name</label><input type="text" id="rname" required><p class="error" id="rnameErr"></p></div>
+    <div class="form-group"><label for="rreg">Registration Number</label><input type="text" id="rreg" required><p class="error" id="rregErr"></p></div>
+    <div class="form-group"><label for="rdept">Department</label><select id="rdept"><option>CSE</option><option>IT</option><option>ECE</option><option>MCA</option><option>Mechanical</option></select></div>
+    <div class="form-group"><label for="remail">College Email</label><input type="email" id="remail" required><p class="error" id="remailErr"></p></div>
+    <div class="form-group"><label for="rpass">Password (min 8 characters)</label><input type="password" id="rpass" required><p class="error" id="rpassErr"></p></div>
+    <div class="form-group"><label for="rconf">Confirm Password</label><input type="password" id="rconf" required><p class="error" id="rconfErr"></p></div>
+    <button class="btn btn-green" type="submit">Create Account</button>
+   </form>
+  </div>
+ </div>
+</div>
+</main>
+<footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
