@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Dashboard | Campus2Career</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-auth-required="student">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+ <div class="container header-inner">
+  <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html" aria-current="page">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
+ </div>
+</header>
+<main id="main">
+
+<div class="container">
+ <div class="row"><div><h1 class="page-title" id="welcomeName">Welcome</h1><p class="lead" id="welcomeDetails"></p></div><a class="btn" href="drives.html">Browse Drives</a></div>
+ <div class="grid grid-4" style="margin:18px 0">
+  <div class="card stat"><strong id="applicationCount">0</strong>Applications</div>
+  <div class="card stat"><strong id="shortlistCount">0</strong>Shortlisted</div>
+  <div class="card stat"><strong id="interviewCount">0</strong>Interview scheduled</div>
+  <div class="card stat"><strong id="offerCount">0</strong>Offers</div>
+ </div>
+ <div class="grid grid-2">
+  <section class="card" aria-labelledby="pc"><h2 id="pc">Profile Completion</h2>
+   <p>70% complete</p>
+   <div class="progress" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completion"><span style="width:70%"></span></div>
+   <p>Add your academic details, skills, certifications and resume to complete your profile.</p><a class="btn btn-outline btn-sm" href="profile.html">Update Profile</a></section>
+  <section class="card" aria-labelledby="nt"><div class="row"><h2 id="nt" style="margin:0">Notifications</h2><button class="btn btn-sm btn-outline" id="markRead">Mark all read</button></div>
+   <ul class="notif" id="notifList"></ul></section>
+ </div>
+ <section class="card" style="margin-top:18px" aria-labelledby="up"><h2 id="up">Upcoming Drives</h2>
+  <div class="table-wrap"><table><caption class="sr-only" style="position:absolute;left:-999px">Upcoming placement drives</caption>
+   <thead><tr><th scope="col">Company</th><th scope="col">Role</th><th scope="col">Date</th><th scope="col">Eligible</th></tr></thead>
+   <tbody id="upcomingDrives"></tbody></table></div>
+ </section>
+</div>
+</main>
+<footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="js/main.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

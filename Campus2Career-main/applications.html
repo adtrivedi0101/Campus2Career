@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Applications | Campus2Career</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-auth-required="student">
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+ <div class="container header-inner">
+  <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
+  <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html" aria-current="page">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
+ </div>
+</header>
+<main id="main">
+
+<div class="container">
+ <h1 class="page-title">My Applications</h1><p class="lead">Track every application from Applied to Selected.</p>
+ <div class="card row" style="margin-bottom:18px"><div class="form-group" style="margin:0;min-width:220px"><label for="sf">Filter by status</label>
+  <select id="sf"><option value="">All</option><option>Applied</option><option>Shortlisted</option><option>Interview</option><option>Selected</option><option>Rejected</option></select></div>
+  <p id="sum" role="status" aria-live="polite" style="margin:0"></p></div>
+ <div class="grid grid-2" id="appList"></div>
+</div>
+</main>
+<footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="js/main.js"></script>
+<script src="js/applications.js"></script>
+</body>
+</html>
