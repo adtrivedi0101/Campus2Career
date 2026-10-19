@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<!-- Page owner: Student 1 -->
 <a class="skip-link" href="#main">Skip to main content</a>
 <header class="site-header">
  <div class="container header-inner">
@@ -18,18 +17,24 @@
 </header>
 <main id="main">
 
-<section class="hero"><div class="container">
- <h1>From Campus to Career, Made Simple</h1>
- <p>Campus2Career is your college placement portal. Find drives, check eligibility, apply in one click and learn from your seniors' interview experiences.</p>
- <a class="btn btn-light" href="login.html">Get Started</a><a class="btn btn-outline" style="color:#fff;border-color:#fff" href="seniors.html">Read Senior Experiences</a>
+<section class="hero"><div class="container hero-inner">
+ <div class="hero-copy">
+  <span class="eyebrow">Your career, our commitment</span>
+  <h1>From Campus<br>to <span>Career.</span></h1>
+  <p>Find the right placement drives, check your eligibility, and learn from the seniors who have been there.</p>
+  <a class="btn" href="drives.html">Explore placement drives <span aria-hidden="true">&rarr;</span></a><a class="btn btn-outline" href="seniors.html">Read senior stories</a>
+ </div>
+ <div class="hero-art" aria-hidden="true">
+  <div class="campus-scene"><div class="campus-building"></div><div class="campus-path"></div><div class="campus-tree tree-one"></div><div class="campus-tree tree-two"></div><div class="scene-note">Your next chapter starts here</div></div>
+ </div>
 </div></section>
 <section class="section"><div class="container">
- <h2>Placement at a Glance <small>(sample data)</small></h2>
+ <h2>Everything for your next step</h2>
  <div class="grid grid-4">
-  <div class="card stat"><strong>120+</strong>Companies visited</div>
-  <div class="card stat"><strong>850</strong>Students placed</div>
-  <div class="card stat"><strong>24 LPA</strong>Highest package</div>
-  <div class="card stat"><strong>8.5 LPA</strong>Average package</div>
+  <div class="card stat"><strong>Discover</strong>Placement opportunities</div>
+  <div class="card stat"><strong>Check</strong>Eligibility at a glance</div>
+  <div class="card stat"><strong>Track</strong>Application progress</div>
+  <div class="card stat"><strong>Prepare</strong>With alumni insights</div>
  </div>
 </div></section>
 <section class="section"><div class="container">
@@ -43,7 +48,7 @@
   <article class="card"><div class="icon" aria-hidden="true">&#127891;</div><h3>Learn from Seniors</h3><p>Real interview rounds, questions and tips shared by placed seniors.</p></article>
  </div>
 </div></section>
-<section class="section" style="background:#fff"><div class="container">
+<section class="section section-paper"><div class="container">
  <h2>How It Works</h2>
  <ol class="steps">
   <li><strong>Register and complete your profile.</strong> Add your academics, skills and resume.</li>
@@ -53,16 +58,14 @@
 </div></section>
 <section class="section"><div class="container">
  <div class="row"><h2>Latest Senior Experiences</h2><a href="seniors.html">View all</a></div>
- <div class="grid grid-2">
-  <article class="card"><h3>Infosys &ndash; Systems Engineer</h3><p>"The aptitude round was easy, but the technical interview focused on DBMS and OOPs basics. Be clear with fundamentals."</p><p><span class="badge b-green">Easy</span> &mdash; Ankit R., 2025 Batch</p></article>
-  <article class="card"><h3>TCS Digital</h3><p>"Prepare your final-year project well. They asked a lot of questions about it and about the technologies used."</p><p><span class="badge b-yellow">Medium</span> &mdash; Sneha K., 2025 Batch</p></article>
- </div>
+ <div class="grid grid-2" id="latestExperiences"></div>
 </div></section>
 
 </main>
 <footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <script src="js/main.js"></script>
+<script src="js/home.js"></script>
 
 </body>
 </html>

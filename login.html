@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<!-- Page owner: Student 1 -->
 <a class="skip-link" href="#main">Skip to main content</a>
 <header class="site-header">
  <div class="container header-inner">
@@ -20,29 +19,29 @@
 
 <div class="container" style="max-width:520px">
  <h1 class="page-title">Welcome to Campus2Career</h1>
- <p class="lead">Login to continue or create a new student account.</p>
+ <p class="lead">Sign in or create an account to continue.</p>
  <div class="card">
+  <p id="authStatus" class="auth-status" role="status" aria-live="polite" hidden></p>
   <div class="tabs" role="tablist">
-   <button class="tab" role="tab" aria-selected="true" data-panel="login-panel">Login</button>
-   <button class="tab" role="tab" aria-selected="false" data-panel="register-panel">Register</button>
+   <button class="tab" id="login-tab" role="tab" aria-controls="login-panel" aria-selected="true" data-panel="login-panel">Login</button>
+   <button class="tab" id="register-tab" role="tab" aria-controls="register-panel" aria-selected="false" data-panel="register-panel">Register</button>
   </div>
-  <div id="login-panel" class="panel">
+  <div id="login-panel" class="panel" role="tabpanel" aria-labelledby="login-tab" tabindex="0">
    <form id="loginForm" novalidate>
-    <div class="form-group"><label for="lrole">Login as</label>
-     <select id="lrole"><option value="student">Student</option><option value="admin">Admin (Placement Cell)</option></select></div>
-    <div class="form-group"><label for="lemail">College Email</label><input type="email" id="lemail" autocomplete="email" required><p class="error" id="lemailErr"></p></div>
+    <div class="form-group"><label for="lemail">Email</label><input type="email" id="lemail" autocomplete="username" required><p class="error" id="lemailErr"></p></div>
     <div class="form-group"><label for="lpass">Password</label><input type="password" id="lpass" autocomplete="current-password" required><p class="error" id="lpassErr"></p></div>
     <div class="form-group"><label><input type="checkbox" id="showPass" style="width:auto"> Show password</label></div>
     <button class="btn" type="submit">Login</button>
    </form>
   </div>
-  <div id="register-panel" class="panel" hidden>
+  <div id="register-panel" class="panel" role="tabpanel" aria-labelledby="register-tab" tabindex="0" hidden>
    <form id="registerForm" novalidate>
-    <div class="form-group"><label for="rname">Full Name</label><input type="text" id="rname" required><p class="error" id="rnameErr"></p></div>
-    <div class="form-group"><label for="rreg">Registration Number</label><input type="text" id="rreg" required><p class="error" id="rregErr"></p></div>
+    <div class="form-group"><label for="rname">Full Name</label><input type="text" id="rname" autocomplete="name" required><p class="error" id="rnameErr"></p></div>
+    <div class="form-group"><label for="rreg">Registration Number</label><input type="text" id="rreg" autocomplete="off" required><p class="error" id="rregErr"></p></div>
     <div class="form-group"><label for="rdept">Department</label><select id="rdept"><option>CSE</option><option>IT</option><option>ECE</option><option>MCA</option><option>Mechanical</option></select></div>
-    <div class="form-group"><label for="remail">College Email</label><input type="email" id="remail" required><p class="error" id="remailErr"></p></div>
-    <div class="form-group"><label for="rpass">Password (min 8 characters)</label><input type="password" id="rpass" required><p class="error" id="rpassErr"></p></div>
+    <div class="form-group"><label for="rrole">Account type</label><select id="rrole"><option value="student">Student</option><option value="admin">Placement Cell Admin</option></select></div>
+    <div class="form-group"><label for="remail">Email</label><input type="email" id="remail" autocomplete="email" required><p class="error" id="remailErr"></p></div>
+    <div class="form-group"><label for="rpass">Password (at least 8 characters)</label><input type="password" id="rpass" autocomplete="new-password" required><p class="error" id="rpassErr"></p></div>
     <div class="form-group"><label for="rconf">Confirm Password</label><input type="password" id="rconf" required><p class="error" id="rconfErr"></p></div>
     <button class="btn btn-green" type="submit">Create Account</button>
    </form>
