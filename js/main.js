@@ -1,3 +1,34 @@
+let csrfToken = '';
+let csrfPromise = null;
+const loadSession = async () => {
+  const response = await fetch('api.php?action=session');
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || 'Your login session has expired.');
+  csrfToken = result.csrf;
+  return result;
+};
+const api = async (action, options = {}) => {
+  const [actionName, query = ''] = action.split('&');
+  if (options.method && options.method !== 'GET' && !['login', 'register'].includes(actionName) && !csrfToken) {
+    csrfPromise = csrfPromise || loadSession().finally(() => { csrfPromise = null; });
+    await csrfPromise;
+  }
+  const headers = {};
+  if (!(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
+  if (options.method && options.method !== 'GET') headers['X-CSRF-Token'] = csrfToken;
+  const response = await fetch(`api.php?action=${encodeURIComponent(actionName)}${query ? `&${query}` : ''}`, {
+    ...options,
+    headers: { ...headers, ...(options.headers || {}) }
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || 'The request could not be completed.');
+  if (actionName === 'session') csrfToken = result.csrf;
+  return result;
+};
+const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[character]));
+
 const navToggle = document.querySelector('.nav-toggle');
 const nav = document.getElementById('nav');
 if (navToggle && nav) {
@@ -5,154 +36,50 @@ if (navToggle && nav) {
     const open = nav.classList.toggle('open');
     navToggle.setAttribute('aria-expanded', open);
   });
-  nav.addEventListener('click', e => {
-    if (e.target.closest('a') && nav.classList.contains('open')) {
-      nav.classList.remove('open');
-      navToggle.setAttribute('aria-expanded', 'false');
-    }
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && nav.classList.contains('open')) {
-      nav.classList.remove('open');
-      navToggle.setAttribute('aria-expanded', 'false');
-      navToggle.focus();
-    }
-  });
 }
 const year = document.getElementById('year');
 if (year) year.textContent = new Date().getFullYear();
 
-// Small message popup used by all pages
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = msg; t.hidden = false;
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => { t.hidden = true; }, 3000);
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.hidden = false;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { toast.hidden = true; }, 3200);
 }
 
-const userDataKeys = new Set(['c2c-profile', 'c2c-skills', 'c2c-certs', 'c2c-applications', 'c2c-resume']);
-function userStorageKey(email, key) {
-  return 'c2c-user:' + encodeURIComponent(email) + ':' + key;
-}
-
-window.C2C = {
-  read(key, fallback) {
-    try {
-      const value = localStorage.getItem(key);
-      return value === null ? fallback : JSON.parse(value);
-    } catch (error) {
-      showToast('Could not load saved portal information from this browser.');
-      return fallback;
-    }
-  },
-  write(key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-      return true;
-    } catch (error) {
-      showToast('Could not save your changes in this browser.');
-      return false;
-    }
-  },
-  getUsers() {
-    const users = this.read('c2c-users', []);
-    return Array.isArray(users) ? users : [];
-  },
-  getSession() {
-    const session = this.read('c2c-session', null);
-    if (!session || typeof session.email !== 'string') return null;
-    const user = this.getUsers().find(account => account.email === session.email);
-    return user && user.role === session.role ? user : null;
-  },
-  readUser(key, fallback, email) {
-    const user = email || (this.getSession() && this.getSession().email);
-    if (!user || !userDataKeys.has(key)) return fallback;
-    try {
-      const value = localStorage.getItem(userStorageKey(user, key));
-      return value === null ? fallback : JSON.parse(value);
-    } catch (error) {
-      showToast('Could not load saved portal information from this browser.');
-      return fallback;
-    }
-  },
-  writeUser(key, value, email) {
-    const session = this.getSession();
-    const user = email || (session && session.email);
-    if (!user || !userDataKeys.has(key)) {
-      showToast('Could not save your changes because no account is active.');
-      return false;
-    }
-    try {
-      localStorage.setItem(userStorageKey(user, key), JSON.stringify(value));
-      return true;
-    } catch (error) {
-      showToast('Could not save your changes in this browser.');
-      return false;
-    }
-  },
-  readAllUserApplications() {
-    return this.getUsers().flatMap(user => {
-      const applications = this.readUser('c2c-applications', [], user.email);
-      return Array.isArray(applications)
-        ? applications.map(application => ({...application, studentEmail: user.email, studentName: user.name}))
-        : [];
-    });
-  },
-  escape(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    })[char]);
-  }
-};
-
-const authPage = document.body.dataset.authRequired;
-window.C2C_AUTH_BLOCKED = false;
-if (authPage) {
-  const user = C2C.getSession();
-  if (!user) {
-    window.C2C_AUTH_BLOCKED = true;
-    const destination = location.pathname.split('/').pop() || 'student-dashboard.html';
-    location.replace('login.html?next=' + encodeURIComponent(destination));
-  } else if (user.role !== authPage) {
-    window.C2C_AUTH_BLOCKED = true;
-    location.replace(user.role === 'admin' ? 'admin.html' : 'student-dashboard.html');
-  }
-}
-
-const loginLink = nav && nav.querySelector('a[href="login.html"]');
-const currentUser = C2C.getSession();
-if (loginLink && currentUser) {
-  loginLink.textContent = 'Logout';
-  loginLink.href = 'login.html?logout=1';
-  loginLink.addEventListener('click', event => {
-    event.preventDefault();
-    localStorage.removeItem('c2c-session');
-    location.href = 'login.html';
-  });
-}
-
-// Tab switching (used on login and admin pages)
 function setupTabs() {
   const tabs = document.querySelectorAll('.tab');
-  const activate = tab => {
-    tabs.forEach(t => {
-      const selected = t === tab;
-      t.setAttribute('aria-selected', String(selected));
-      t.tabIndex = selected ? 0 : -1;
-    });
-    document.querySelectorAll('.panel').forEach(p => p.hidden = p.id !== tab.dataset.panel);
-  };
-  tabs.forEach((tab, index) => {
-    tab.tabIndex = tab.getAttribute('aria-selected') === 'true' ? 0 : -1;
-    tab.addEventListener('click', () => activate(tab));
-    tab.addEventListener('keydown', e => {
-      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
-      e.preventDefault();
-      const next = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 :
-        (index + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
-      tabs[next].focus();
-      activate(tabs[next]);
-    });
-  });
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    tabs.forEach(item => item.setAttribute('aria-selected', String(item === tab)));
+    document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.id !== tab.dataset.panel; });
+  }));
 }
+
+if (!document.getElementById('loginForm')) loadSession().then(({ user, csrf }) => {
+  csrfToken = csrf;
+  document.querySelectorAll('#nav a').forEach(link => {
+    const adminLink = link.getAttribute('href') === 'admin.html';
+    const studentLink = ['student-dashboard.html', 'profile.html', 'drives.html', 'applications.html', 'seniors.html'].includes(link.getAttribute('href'));
+    if ((user.role === 'admin' && studentLink) || (user.role === 'student' && adminLink)) {
+      link.closest('li').hidden = true;
+    }
+    if (link.getAttribute('href') === 'login.html') link.closest('li').hidden = true;
+  });
+  const list = nav && nav.querySelector('ul');
+  if (list && !document.getElementById('logoutLink')) {
+    const item = document.createElement('li');
+    item.innerHTML = '<a href="#" id="logoutLink">Log out</a>';
+    list.append(item);
+    item.querySelector('a').addEventListener('click', async event => {
+      event.preventDefault();
+      try {
+        await api('logout', { method: 'POST', body: '{}' });
+        location.href = 'login.html';
+      } catch (error) {
+        showToast(error.message);
+      }
+    });
+  }
+}).catch(() => { location.href = 'login.html'; });

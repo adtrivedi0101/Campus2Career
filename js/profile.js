@@ -1,101 +1,107 @@
-if (!window.C2C_AUTH_BLOCKED) {
-const account = C2C.getSession();
-const defaultProfile = {
-  pname: account.name,
-  pphone: '',
-  pemail: account.email,
-  pdept: account.department,
-  p10: '',
-  p12: '',
-  pcgpa: '',
-  pback: ''
-};
-const storedProfile = C2C.readUser('c2c-profile', defaultProfile);
-const profile = storedProfile && typeof storedProfile === 'object' && !Array.isArray(storedProfile)
-  ? storedProfile : defaultProfile;
-Object.entries(defaultProfile).forEach(([id, value]) => {
-  const input = document.getElementById(id);
-  if (input) input.value = Object.prototype.hasOwnProperty.call(profile, id) ? profile[id] : value;
-});
-let skills = C2C.readUser('c2c-skills', []);
-let certs = C2C.readUser('c2c-certs', []);
-let savedResume = C2C.readUser('c2c-resume', null);
-if (!Array.isArray(skills)) skills = [];
-if (!Array.isArray(certs)) certs = [];
+let skills = [];
+let certifications = [];
 function renderSkills() {
-  skillList.innerHTML = skills.map((s, i) =>
-    `<span class="tag">${C2C.escape(s)}<button type="button" aria-label="Remove ${C2C.escape(s)}" data-i="${i}">&times;</button></span>`).join('');
+  document.getElementById('skillList').innerHTML = skills.map((skill, index) =>
+    `<span class="tag">${escapeHtml(skill)}<button type="button" aria-label="Remove ${escapeHtml(skill)}" data-index="${index}">&times;</button></span>`
+  ).join('');
 }
-function renderCerts() { certList.innerHTML = certs.map(c => `<li>${C2C.escape(c)}</li>`).join(''); }
-function renderResume() {
-  resumeName.replaceChildren();
-  if (!savedResume || typeof savedResume.name !== 'string' || typeof savedResume.data !== 'string') {
-    resumeName.textContent = 'No file uploaded yet.';
+function renderCertifications() {
+  document.getElementById('certList').innerHTML = certifications.map((item, index) =>
+    `<li>${escapeHtml(item)} <button class="btn btn-sm btn-outline" type="button" data-index="${index}">Remove</button></li>`
+  ).join('');
+}
+function addTextItem(input, list, render, maxLength) {
+  const value = input.value.trim();
+  if (!value || value.length > maxLength || list.length >= 50) {
+    input.setCustomValidity(!value ? '' : list.length >= 50 ? 'You can add at most 50 items.' : `Use no more than ${maxLength} characters.`);
+    input.reportValidity();
+    input.setCustomValidity('');
     return;
   }
-  resumeName.append('Saved: ');
-  const link = document.createElement('a');
-  link.href = savedResume.data;
-  link.download = savedResume.name;
-  link.textContent = savedResume.name;
-  resumeName.append(link);
+  if (!list.some(item => item.toLowerCase() === value.toLowerCase())) list.push(value);
+  input.value = '';
+  render();
 }
-skillList.addEventListener('click', e => {
-  if (e.target.dataset.i !== undefined) { skills.splice(e.target.dataset.i, 1); C2C.writeUser('c2c-skills', skills); renderSkills(); }
+document.getElementById('skillList').addEventListener('click', event => {
+  const index = event.target.dataset.index;
+  if (index !== undefined) { skills.splice(Number(index), 1); renderSkills(); }
 });
-skillInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const v = skillInput.value.trim();
-    if (v && !skills.includes(v)) { skills.push(v); C2C.writeUser('c2c-skills', skills); renderSkills(); }
-    skillInput.value = '';
+document.getElementById('certList').addEventListener('click', event => {
+  const index = event.target.dataset.index;
+  if (index !== undefined) { certifications.splice(Number(index), 1); renderCertifications(); }
+});
+document.getElementById('skillInput').addEventListener('keydown', event => {
+  if (event.key === 'Enter') { event.preventDefault(); addTextItem(event.currentTarget, skills, renderSkills, 60); }
+});
+document.getElementById('certInput').addEventListener('keydown', event => {
+  if (event.key === 'Enter') { event.preventDefault(); addTextItem(event.currentTarget, certifications, renderCertifications, 150); }
+});
+
+api('profile').then(profile => {
+  document.getElementById('pname').value = profile.full_name;
+  document.getElementById('pemail').value = profile.email;
+  document.getElementById('pdept').value = profile.department;
+  document.getElementById('pphone').value = profile.phone || '';
+  document.getElementById('p10').value = profile.tenth_percent ?? '';
+  document.getElementById('p12').value = profile.twelfth_percent ?? '';
+  document.getElementById('pcgpa').value = profile.cgpa ?? '';
+  document.getElementById('pback').value = profile.backlogs ?? 0;
+  skills = JSON.parse(profile.skills || '[]');
+  certifications = JSON.parse(profile.certifications || '[]');
+  if (profile.resume_uploaded) {
+    document.getElementById('resumeName').textContent = 'A resume is saved to your profile.';
+    document.getElementById('resumeDownload').hidden = false;
+  }
+  renderSkills();
+  renderCertifications();
+}).catch(error => showToast(error.message));
+
+document.getElementById('resume').addEventListener('change', async event => {
+  const file = event.currentTarget.files[0];
+  const error = document.getElementById('resumeErr');
+  error.textContent = '';
+  if (!file) return;
+  if (file.type !== 'application/pdf' || file.size > 2 * 1024 * 1024) {
+    error.textContent = file.type !== 'application/pdf' ? 'Only PDF files are allowed.' : 'File must be smaller than 2 MB.';
+    event.currentTarget.value = '';
+    return;
+  }
+  document.getElementById('resumeName').textContent = `Selected: ${file.name}`;
+  const formData = new FormData();
+  formData.append('resume', file);
+  try {
+    await api('resume', { method: 'POST', body: formData });
+    document.getElementById('resumeName').textContent = 'Resume uploaded successfully.';
+    document.getElementById('resumeDownload').hidden = false;
+    showToast('Resume uploaded.');
+  } catch (uploadError) {
+    error.textContent = uploadError.message;
+    event.currentTarget.value = '';
   }
 });
-certInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    if (certInput.value.trim()) { certs.push(certInput.value.trim()); C2C.writeUser('c2c-certs', certs); renderCerts(); certInput.value = ''; }
-  }
+
+document.getElementById('profileForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const phone = document.getElementById('pphone').value.trim();
+  const cgpa = document.getElementById('pcgpa').value;
+  const phoneOk = /^[6-9][0-9]{9}$/.test(phone);
+  const cgpaOk = cgpa === '' || (Number(cgpa) >= 0 && Number(cgpa) <= 10);
+  document.getElementById('pphoneErr').textContent = phoneOk ? '' : 'Enter a valid 10-digit mobile number.';
+  document.getElementById('pcgpaErr').textContent = cgpaOk ? '' : 'CGPA must be between 0 and 10.';
+  if (!phoneOk || !cgpaOk) return;
+  try {
+    await api('profile', {
+      method: 'POST',
+      body: JSON.stringify({
+        phone,
+        tenth_percent: document.getElementById('p10').value,
+        twelfth_percent: document.getElementById('p12').value,
+        cgpa,
+        backlogs: document.getElementById('pback').value,
+        skills,
+        certifications
+      })
+    });
+    showToast('Profile saved.');
+  } catch (error) { showToast(error.message); }
 });
-resume.addEventListener('change', () => {
-  const f = resume.files[0]; resumeErr.textContent = '';
-  if (!f) return;
-  if (f.type !== 'application/pdf') { resumeErr.textContent = 'Only PDF files are allowed.'; resume.value = ''; return; }
-  if (f.size > 2 * 1024 * 1024) { resumeErr.textContent = 'File must be smaller than 2 MB.'; resume.value = ''; return; }
-  const reader = new FileReader();
-  reader.onerror = () => { resumeErr.textContent = 'Could not read this file. Please try again.'; };
-  reader.onload = () => {
-    if (typeof reader.result !== 'string') {
-      resumeErr.textContent = 'Could not read this file. Please try again.';
-      return;
-    }
-    savedResume = {name: f.name, data: reader.result};
-    if (C2C.writeUser('c2c-resume', savedResume)) {
-      renderResume();
-      showToast('Resume saved in this browser.');
-    } else {
-      savedResume = C2C.readUser('c2c-resume', null);
-    }
-  };
-  reader.readAsDataURL(f);
-});
-profileForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const phoneOk = /^[6-9][0-9]{9}$/.test(pphone.value.trim());
-  const cgpaOk = pcgpa.value !== '' && pcgpa.value >= 0 && pcgpa.value <= 10;
-  const p10Ok = p10.value !== '' && p10.value >= 0 && p10.value <= 100;
-  const p12Ok = p12.value !== '' && p12.value >= 0 && p12.value <= 100;
-  const backlogsOk = pback.value !== '' && Number.isInteger(Number(pback.value)) && Number(pback.value) >= 0;
-  pphoneErr.textContent = phoneOk ? '' : 'Enter a valid 10-digit mobile number.';
-  pcgpaErr.textContent = cgpaOk ? '' : 'CGPA must be between 0 and 10.';
-  p10Err.textContent = p10Ok ? '' : 'Percentage must be between 0 and 100.';
-  p12Err.textContent = p12Ok ? '' : 'Percentage must be between 0 and 100.';
-  pbackErr.textContent = backlogsOk ? '' : 'Backlogs must be a non-negative whole number.';
-  if (phoneOk && cgpaOk && p10Ok && p12Ok && backlogsOk) {
-    const saved = {};
-    Object.keys(defaultProfile).forEach(id => { saved[id] = document.getElementById(id).value; });
-    if (C2C.writeUser('c2c-profile', saved)) showToast('Profile saved in this browser.');
-  }
-});
-renderSkills(); renderCerts(); renderResume();
-}

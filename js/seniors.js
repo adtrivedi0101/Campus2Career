@@ -1,35 +1,52 @@
-let exps = C2C.read('c2c-experiences', []);
-if (!Array.isArray(exps)) exps = [];
-function stars(n) { return '&#9733;'.repeat(n) + '&#9734;'.repeat(5 - n); }
-function render() {
-  const q = sq.value.toLowerCase();
-  const list = exps.filter(e => (e.c + ' ' + e.n).toLowerCase().includes(q) && (!sd.value || e.d === sd.value));
-  const cls = {Easy: 'b-green', Medium: 'b-yellow', Hard: 'b-red'};
-  expList.innerHTML = list.length ? list.map(e => `<article class="card">
-    <div class="row"><h2 style="font-size:1.2rem;margin:0">${C2C.escape(e.c)}</h2><span class="badge ${cls[e.d] || 'b-grey'}">${C2C.escape(e.d)}</span></div>
-    <p style="margin:2px 0">${C2C.escape(e.r)} &bull; ${C2C.escape(e.n)}, ${C2C.escape(e.b)} Batch</p>
-    <p aria-label="Rating ${e.s} out of 5" style="color:#92400e;margin:2px 0">${stars(e.s)}</p>
-    <details><summary>Read experience</summary><p>${C2C.escape(e.t)}</p></details></article>`).join('') :
-    (exps.length ? '<p class="card">No experiences match your search. Try a different company or difficulty.</p>' :
-      '<p class="card">No experiences have been shared yet. Be the first to share yours below.</p>');
+let experiences = [];
+const stars = rating => '&#9733;'.repeat(Number(rating)) + '&#9734;'.repeat(5 - Number(rating));
+
+function renderExperiences() {
+  const query = document.getElementById('sq').value.toLowerCase();
+  const difficulty = document.getElementById('sd').value;
+  const shown = experiences.filter(item =>
+    `${item.company} ${item.name}`.toLowerCase().includes(query) &&
+    (!difficulty || item.difficulty === difficulty));
+  const colors = { Easy: 'b-green', Medium: 'b-yellow', Hard: 'b-red' };
+  document.getElementById('expList').innerHTML = shown.length ? shown.map(item => `<article class="card">
+    <div class="row"><h2 style="font-size:1.2rem;margin:0">${escapeHtml(item.company)}</h2><span class="badge ${colors[item.difficulty]}">${escapeHtml(item.difficulty)}</span></div>
+    <p style="margin:2px 0">${escapeHtml(item.role || 'Role not specified')} &bull; ${escapeHtml(item.name)}, ${escapeHtml(item.batch)} Batch</p>
+    <p aria-label="Rating ${Number(item.rating)} out of 5" style="color:#92400e;margin:2px 0">${stars(item.rating)}</p>
+    <details><summary>Read experience</summary><p>${escapeHtml(item.experience)}</p></details></article>`).join('') :
+    '<p class="card">No experiences match your search.</p>';
 }
-[sq, sd].forEach(el => el.addEventListener('input', render));
-shareForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const chk = (el, err, ok, msg) => { document.getElementById(err).textContent = ok ? '' : msg; return ok; };
-  const r = [
-    chk(xn, 'xnErr', xn.value.trim().length >= 2, 'Enter your name.'),
-    chk(xb, 'xbErr', /^20[0-9]{2}$/.test(xb.value.trim()), 'Enter a valid year like 2025.'),
-    chk(xc, 'xcErr', xc.value.trim() !== '', 'Enter the company name.'),
-    chk(xt, 'xtErr', xt.value.trim().length >= 30, 'Please write at least 30 characters.')
+
+async function loadExperiences() {
+  try {
+    experiences = await api('experiences');
+    renderExperiences();
+  } catch (error) { showToast(error.message); }
+}
+['sq', 'sd'].forEach(id => document.getElementById(id).addEventListener('input', renderExperiences));
+document.getElementById('shareForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const data = {
+    name: document.getElementById('xn').value.trim(),
+    batch: document.getElementById('xb').value.trim(),
+    company: document.getElementById('xc').value.trim(),
+    role: document.getElementById('xr').value.trim(),
+    difficulty: document.getElementById('xd').value,
+    rating: Number(document.getElementById('xs').value),
+    experience: document.getElementById('xt').value.trim()
+  };
+  const errors = [
+    ['xnErr', data.name.length >= 2, 'Enter your name.'],
+    ['xbErr', /^20[0-9]{2}$/.test(data.batch), 'Enter a valid year like 2025.'],
+    ['xcErr', Boolean(data.company), 'Enter the company name.'],
+    ['xtErr', data.experience.length >= 30, 'Please write at least 30 characters.']
   ];
-  if (r.every(Boolean)) {
-    exps.unshift({n: xn.value.trim(), b: xb.value.trim(), c: xc.value.trim(), r: xr.value.trim() || 'Role not provided', d: xd.value, s: +xs.value, t: xt.value.trim()});
-    if (C2C.write('c2c-experiences', exps)) {
-      render(); shareForm.reset(); showToast('Thank you! Your experience has been added.');
-    } else {
-      exps.shift();
-    }
-  }
+  errors.forEach(([id, valid, message]) => { document.getElementById(id).textContent = valid ? '' : message; });
+  if (errors.some(([, valid]) => !valid)) return;
+  try {
+    await api('experience', { method: 'POST', body: JSON.stringify(data) });
+    event.currentTarget.reset();
+    await loadExperiences();
+    showToast('Thank you. Your experience has been shared.');
+  } catch (error) { showToast(error.message); }
 });
-render();
+loadExperiences();
