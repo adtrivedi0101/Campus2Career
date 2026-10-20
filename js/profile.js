@@ -1,5 +1,6 @@
 let skills = [];
 let certifications = [];
+let resumeUploaded = false;
 function renderSkills() {
   document.getElementById('skillList').innerHTML = skills.map((skill, index) =>
     `<span class="tag">${escapeHtml(skill)}<button type="button" aria-label="Remove ${escapeHtml(skill)}" data-index="${index}">&times;</button></span>`
@@ -48,8 +49,10 @@ api('profile').then(profile => {
   document.getElementById('pback').value = profile.backlogs ?? 0;
   skills = JSON.parse(profile.skills || '[]');
   certifications = JSON.parse(profile.certifications || '[]');
-  if (profile.resume_uploaded) {
-    document.getElementById('resumeName').textContent = 'A resume is saved to your profile.';
+  resumeUploaded = Number(profile.resume_uploaded) === 1;
+  if (resumeUploaded) {
+    document.getElementById('resumeName').textContent = 'Saved resume: PDF uploaded.';
+    document.getElementById('resumeCurrent').hidden = false;
     document.getElementById('resumeDownload').hidden = false;
   }
   renderSkills();
@@ -71,12 +74,17 @@ document.getElementById('resume').addEventListener('change', async event => {
   formData.append('resume', file);
   try {
     await api('resume', { method: 'POST', body: formData });
-    document.getElementById('resumeName').textContent = 'Resume uploaded successfully.';
+    resumeUploaded = true;
+    document.getElementById('resumeName').textContent = `Saved resume: ${file.name}`;
+    document.getElementById('resumeCurrent').hidden = false;
     document.getElementById('resumeDownload').hidden = false;
     showToast('Resume uploaded.');
   } catch (uploadError) {
     error.textContent = uploadError.message;
     event.currentTarget.value = '';
+    document.getElementById('resumeName').textContent = resumeUploaded
+      ? 'Saved resume: PDF uploaded.'
+      : 'No resume uploaded yet. Choose a PDF file to upload.';
   }
 });
 

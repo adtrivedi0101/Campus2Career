@@ -47,18 +47,20 @@ applicationBody.addEventListener('change', async event => {
 });
 document.getElementById('compForm').addEventListener('submit', async event => {
   event.preventDefault();
+  const form = event.currentTarget;
   const name = document.getElementById('cn').value.trim();
   const sector = document.getElementById('cs').value.trim();
   document.getElementById('compErr').textContent = '';
   try {
     await api('company', { method: 'POST', body: JSON.stringify({ name, sector }) });
-    event.currentTarget.reset();
+    form.reset();
     await Promise.all([loadCompanies(), loadSummary()]);
     showToast('Company added.');
   } catch (error) { document.getElementById('compErr').textContent = error.message; }
 });
 document.getElementById('driveForm').addEventListener('submit', async event => {
   event.preventDefault();
+  const form = event.currentTarget;
   const data = {
     company: document.getElementById('dc').value.trim(),
     role: document.getElementById('dr').value.trim(),
@@ -71,7 +73,7 @@ document.getElementById('driveForm').addEventListener('submit', async event => {
   document.getElementById('driveErr').textContent = '';
   try {
     await api('drive', { method: 'POST', body: JSON.stringify(data) });
-    event.currentTarget.reset();
+    form.reset();
     document.getElementById('driveErr').textContent = '';
     await loadSummary();
     showToast('Drive posted.');
@@ -79,12 +81,13 @@ document.getElementById('driveForm').addEventListener('submit', async event => {
 });
 document.getElementById('noteForm').addEventListener('submit', async event => {
   event.preventDefault();
+  const form = event.currentTarget;
   try {
     await api('notification', { method: 'POST', body: JSON.stringify({
       audience: document.getElementById('nt').value,
       message: document.getElementById('nm').value.trim()
     }) });
-    event.currentTarget.reset();
+    form.reset();
     document.getElementById('nmErr').textContent = '';
     showToast('Notification sent.');
   } catch (error) { document.getElementById('nmErr').textContent = error.message; }

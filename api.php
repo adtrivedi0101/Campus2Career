@@ -76,6 +76,17 @@ try {
         unset($user['password_hash']);
         $_SESSION['user'] = $user;
         $_SESSION['csrf'] = bin2hex(random_bytes(32));
+        if (($data['remember'] ?? false) === true) {
+            $cookie = session_get_cookie_params();
+            setcookie(session_name(), session_id(), [
+                'expires' => time() + 2592000,
+                'path' => $cookie['path'],
+                'domain' => $cookie['domain'],
+                'secure' => $cookie['secure'],
+                'httponly' => $cookie['httponly'],
+                'samesite' => $cookie['samesite'] ?? 'Lax',
+            ]);
+        }
         respond(['user' => $user, 'csrf' => $_SESSION['csrf']]);
     }
 
@@ -85,11 +96,23 @@ try {
         $department = text_value($data['department'] ?? '');
         $email = strtolower(text_value($data['email'] ?? ''));
         $password = $data['password'] ?? '';
-        if (!valid_name($name) || !preg_match('/^[A-Z0-9-]{4,20}$/', $reg) ||
-            !in_array($department, ['CSE', 'IT', 'ECE', 'MCA', 'Mechanical'], true) ||
-            !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190 ||
-            !is_string($password) || strlen($password) < 8 || strlen($password) > 72) {
-            respond(['error' => 'Check your details. Use a valid registration number and a password of at least 8 characters.'], 422);
+        if (!valid_name($name)) {
+            respond(['error' => 'Enter a valid full name.'], 422);
+        }
+        if (!preg_match('/^[A-Z0-9-]{4,20}$/', $reg)) {
+            respond(['error' => 'Use a registration number with 4-20 letters, numbers, or hyphens.'], 422);
+        }
+        if (!in_array($department, ['CSE', 'IT', 'ECE', 'MCA', 'Mechanical'], true)) {
+            respond(['error' => 'Select a valid department.'], 422);
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 190) {
+            respond(['error' => 'Enter a valid email address.'], 422);
+        }
+        if (!is_string($password) || !preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,72}$/', $password)) {
+            respond(['error' => 'Use 8-72 characters with uppercase, lowercase, a number, and a special character.'], 422);
+        }
+        if (($data['terms_accepted'] ?? false) !== true) {
+            respond(['error' => 'Accept the Terms and Conditions to register.'], 422);
         }
         db()->beginTransaction();
         $statement = db()->prepare('INSERT INTO users (full_name, registration_number, department, email, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)');
@@ -281,9 +304,17 @@ try {
         if (mb_strlen($name) < 2 || mb_strlen($name) > 150 || mb_strlen($sector) < 2 || mb_strlen($sector) > 100) {
             respond(['error' => 'Company name must be 2-150 characters and sector 2-100 characters.'], 422);
         }
+        $pdo = db();
+        $pdo->beginTransaction();
         try {
-            db()->prepare('INSERT INTO companies (name, sector) VALUES (?, ?)')->execute([$name, $sector]);
+            $pdo->prepare('INSERT INTO companies (name, sector) VALUES (?, ?)')->execute([$name, $sector]);
+            $pdo->prepare('INSERT INTO notifications (message, audience) VALUES (?, ?)')->execute([
+                'New company added: ' . $name . '.',
+                'All students',
+            ]);
+            $pdo->commit();
         } catch (PDOException $error) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
             if ($error->getCode() === '23000') respond(['error' => 'That company already exists.'], 409);
             throw $error;
         }
@@ -374,7 +405,7 @@ try {
 
     if ($action === 'dashboard' && $method === 'GET') {
         require_role('student');
-        $statement = db()->prepare('SELECT phone, tenth_percent, twelfth_percent, cgpa, backlogs, skills, certifications, (resume_path IS NOT NULL) AS resume_uploaded FROM profiles WHERE user_id=?');
+        $statement = db()->prepare('SELECT u.department, p.phone, p.tenth_percent, p.twelfth_percent, p.cgpa, p.backlogs, p.skills, p.certifications, (p.resume_path IS NOT NULL) AS resume_uploaded FROM profiles p JOIN users u ON u.id=p.user_id WHERE p.user_id=?');
         $statement->execute([$user['id']]);
         $profile = $statement->fetch();
         $statement = db()->prepare('SELECT status, COUNT(*) AS total FROM applications WHERE user_id=? GROUP BY status');
@@ -383,8 +414,22 @@ try {
         $statement = db()->prepare('SELECT COUNT(*) FROM applications WHERE user_id=?');
         $statement->execute([$user['id']]);
         $applications = (int)$statement->fetchColumn();
-        $drives = db()->query('SELECT d.id, c.name AS company, d.role, d.deadline, d.min_cgpa, d.max_backlogs FROM drives d JOIN companies c ON c.id=d.company_id WHERE d.deadline >= CURDATE() ORDER BY d.deadline LIMIT 5')->fetchAll();
-        respond(['profile' => $profile, 'application_count' => $applications, 'statuses' => $counts, 'drives' => $drives]);
+        $eligibleDrives = 0;
+        if ($profile['cgpa'] !== null) {
+            $statement = db()->prepare('SELECT COUNT(*) FROM drives WHERE deadline >= CURDATE() AND min_cgpa <= ? AND max_backlogs >= ?');
+            $statement->execute([$profile['cgpa'], $profile['backlogs']]);
+            $eligibleDrives = (int)$statement->fetchColumn();
+        }
+        $statement = db()->prepare('SELECT d.id, c.name AS company, c.sector, d.role, d.package, d.drive_type, d.deadline, d.min_cgpa, d.max_backlogs, EXISTS(SELECT 1 FROM applications a WHERE a.drive_id=d.id AND a.user_id=?) AS applied FROM drives d JOIN companies c ON c.id=d.company_id WHERE d.deadline >= CURDATE() ORDER BY d.deadline LIMIT 12');
+        $statement->execute([$user['id']]);
+        $drives = $statement->fetchAll();
+        respond([
+            'profile' => $profile,
+            'application_count' => $applications,
+            'statuses' => $counts,
+            'analytics' => ['eligible_drives' => $eligibleDrives],
+            'drives' => $drives,
+        ]);
     }
 
     if ($action === 'admin-summary' && $method === 'GET') {

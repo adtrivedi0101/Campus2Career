@@ -72,7 +72,11 @@ if (!document.getElementById('loginForm')) loadSession().then(({ user, csrf }) =
     const item = document.createElement('li');
     item.innerHTML = '<a href="#" id="logoutLink">Log out</a>';
     list.append(item);
-    item.querySelector('a').addEventListener('click', async event => {
+  }
+  const logoutLink = document.getElementById('logoutLink');
+  if (logoutLink && !logoutLink.dataset.logoutBound) {
+    logoutLink.dataset.logoutBound = 'true';
+    logoutLink.addEventListener('click', async event => {
       event.preventDefault();
       try {
         await api('logout', { method: 'POST', body: '{}' });

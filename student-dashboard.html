@@ -4,47 +4,87 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Student Dashboard | Campus2Career</title>
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=7">
 </head>
-<body>
+<body class="dashboard-page">
 <!-- Page owner: Student 2 -->
 <a class="skip-link" href="#main">Skip to main content</a>
 <header class="site-header">
  <div class="container header-inner">
   <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
-  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html" aria-current="page">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html" aria-current="page">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li class="dashboard-account"><a class="dashboard-notification-link" href="#notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><span id="navUnread" class="nav-notification-count" hidden></span></a></li><li class="dashboard-account dashboard-profile-menu"><details><summary><span class="dashboard-avatar" id="studentAvatar">ST</span><span id="navStudentName">Student</span><span aria-hidden="true">⌄</span></summary><div class="dashboard-profile-dropdown"><a href="profile.html">My profile</a><a href="applications.html">My applications</a><a href="#" id="logoutLink">Log out</a></div></details></li></ul></nav>
  </div>
 </header>
 <main id="main">
 
-<div class="container">
- <div class="row"><div><h1 class="page-title">Welcome</h1><p class="lead">Placement overview</p></div><a class="btn" href="drives.html">Browse Drives</a></div>
- <div class="grid grid-4" style="margin:18px 0">
-  <div class="card stat"><strong>0</strong>Applications</div>
-  <div class="card stat"><strong>0</strong>Shortlisted</div>
-  <div class="card stat"><strong>0</strong>Interview scheduled</div>
-  <div class="card stat"><strong>0</strong>Selected</div>
- </div>
+<div class="container dashboard-shell">
+ <section class="welcome-banner" aria-labelledby="welcomeHeading">
+  <div class="welcome-copy">
+   <span class="eyebrow">YOUR CAREER JOURNEY</span>
+   <h1 id="welcomeHeading" class="page-title">Welcome back!</h1>
+   <p id="welcomeMeta" class="welcome-meta">Student placement overview</p>
+   <p class="welcome-description">Your next career opportunity could be closer than you think.</p>
+   <a class="btn welcome-action" href="drives.html">Explore Placement Drives <span aria-hidden="true">&rarr;</span></a>
+  </div>
+  <div class="welcome-art" aria-hidden="true">
+   <span class="art-sun"></span><span class="art-orbit"></span>
+   <span class="art-float art-float-one">&#9733; Career ready</span>
+   <span class="art-float art-float-two">&#10003; New opportunities</span>
+   <div class="art-window"><span></span><span></span><span></span><div class="art-person"><i></i><b></b></div><div class="art-laptop"></div></div>
+   <span class="art-plant art-plant-left">&#10022;</span><span class="art-plant art-plant-right">&#10022;</span>
+  </div>
+ </section>
+
+ <section class="dashboard-stats" aria-label="Placement statistics">
+  <article class="stat-card"><span class="stat-icon stat-blue" aria-hidden="true">&#9993;</span><div><p>Applications Submitted</p><strong id="statApplications">0</strong><small id="statApplicationsHint">Your applications</small></div></article>
+  <article class="stat-card"><span class="stat-icon stat-violet" aria-hidden="true">&#9673;</span><div><p>Interviews Scheduled</p><strong id="statInterviews">0</strong><small>Interview stage</small></div></article>
+  <article class="stat-card"><span class="stat-icon stat-green" aria-hidden="true">&#9733;</span><div><p>Offers Received</p><strong id="statOffers">0</strong><small>Selected applications</small></div></article>
+  <article class="stat-card"><span class="stat-icon stat-orange" aria-hidden="true">&#9881;</span><div><p>Upcoming Drives</p><strong id="statDrives">0</strong><small>Matching your profile</small></div></article>
+ </section>
+
+ <section class="dashboard-insights" aria-label="Application and placement insights">
+  <article class="dashboard-card application-card">
+   <div class="card-heading"><div><span class="section-kicker">YOUR PROGRESS</span><h2>Application Status</h2></div><span class="period-label">All time</span></div>
+   <div class="application-chart-layout"><div id="applicationDonut" class="application-donut" role="img" aria-label="Application status breakdown"><div><strong id="donutTotal">0</strong><span>Total</span></div></div><ul id="applicationLegend" class="application-legend"></ul></div>
+   <p id="analyticsSummary" class="analytics-summary">Loading your application insights…</p>
+  </article>
+  <article class="dashboard-card readiness-card">
+   <div class="card-heading"><div><span class="section-kicker">GET INTERVIEW READY</span><h2>Placement Readiness</h2></div><span class="readiness-icon" aria-hidden="true">&#10022;</span></div>
+   <div class="readiness-body"><div id="readinessRing" class="readiness-ring" role="img" aria-label="Placement readiness"><div><strong id="readinessScore">0</strong><span>/ 100</span></div></div><div id="readinessBars" class="readiness-bars"></div></div>
+   <p class="readiness-note">Aptitude and interview figures are starter estimates. Update your profile to personalize readiness.</p>
+   <a class="text-link" href="profile.html">Improve Your Readiness <span aria-hidden="true">&rarr;</span></a>
+  </article>
+  <article class="dashboard-card profile-card">
+   <div class="card-heading"><div><span class="section-kicker">MAKE A GREAT IMPRESSION</span><h2>Profile Completion</h2></div></div>
+   <div class="profile-progress-body"><div id="profileRing" class="profile-ring" role="img" aria-label="Profile completion"><div><strong id="profilePercent">0%</strong><span>complete</span></div></div><ul id="profileChecklist" class="profile-checklist"></ul></div>
+   <a class="text-link" href="profile.html">Complete Your Profile <span aria-hidden="true">&rarr;</span></a>
+  </article>
+ </section>
+
  <div id="notificationAlert" class="notification-alert" role="status" aria-live="polite" hidden></div>
- <div class="grid grid-2">
-  <section class="card" aria-labelledby="pc"><h2 id="pc">Profile Completion</h2>
-   <p>Loading profile completion</p>
-   <div class="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completion"><span style="width:0%"></span></div>
-   <p>Keep your academic details and skills up to date.</p><a class="btn btn-outline btn-sm" href="profile.html">Update Profile</a></section>
-  <section class="card" aria-labelledby="nt"><div class="row"><h2 id="nt" style="margin:0">Notifications</h2><button class="btn btn-sm btn-outline" id="markRead">Mark all read</button></div>
-   <ul class="notif" id="notifList"></ul></section>
- </div>
- <section class="card" style="margin-top:18px" aria-labelledby="up"><h2 id="up">Upcoming Drives</h2>
-  <div class="table-wrap"><table><caption class="sr-only" style="position:absolute;left:-999px">Upcoming placement drives</caption>
-   <thead><tr><th scope="col">Company</th><th scope="col">Role</th><th scope="col">Date</th><th scope="col">Eligible</th></tr></thead>
-   <tbody></tbody></table></div>
+
+ <section class="dashboard-updates" aria-label="Upcoming deadlines and recent notifications">
+  <article class="dashboard-card deadline-card">
+   <div class="card-heading"><div><span class="section-kicker">STAY ONE STEP AHEAD</span><h2>Upcoming Deadlines</h2></div><a class="text-link" href="drives.html">View all <span aria-hidden="true">&rarr;</span></a></div>
+   <ul id="deadlineList" class="deadline-list"><li class="empty-state">Loading upcoming opportunities…</li></ul>
+  </article>
+  <article id="notifications" class="dashboard-card notifications-card">
+   <div class="card-heading"><div><span class="section-kicker">THE LATEST</span><h2>Recent Notifications</h2></div><button class="text-link notification-mark-read" id="markRead" type="button">Mark all as read</button></div>
+   <ul class="notification-list notif" id="notifList"><li class="empty-state">Loading your notifications…</li></ul>
+  </article>
+ </section>
+
+ <section class="dashboard-recommendations" aria-labelledby="recommendationsHeading">
+  <div class="card-heading recommendations-heading"><div><span class="section-kicker">YOUR NEXT BIG MOVE</span><h2 id="recommendationsHeading">Recommended Placement Drives</h2></div><a class="text-link" href="drives.html">View all drives <span aria-hidden="true">&rarr;</span></a></div>
+  <div id="recommendedDrives" class="drive-recommendation-grid"><p class="empty-state">Finding the best matches for your profile…</p></div>
  </section>
 </div>
+<dialog id="dashboardApplyDialog" class="dashboard-apply-dialog" aria-labelledby="dashboardApplyTitle"><h2 id="dashboardApplyTitle">Confirm Application</h2><p id="dashboardApplyMessage"></p><div class="row" style="justify-content:flex-end"><button class="btn btn-outline" id="dashboardApplyCancel" type="button">Cancel</button><button class="btn" id="dashboardApplyConfirm" type="button">Apply now</button></div></dialog>
 </main>
 <footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <script src="js/main.js?v=2"></script>
-<script src="js/dashboard.js?v=2"></script>
+<script src="js/dashboard.js?v=5"></script>
 </body>
 </html>

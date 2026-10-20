@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login / Register | Campus2Career</title>
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 <!-- Page owner: Student 1 -->
@@ -23,28 +23,37 @@
  <p class="lead">Login to continue or create a new student account.</p>
  <div class="card">
   <div class="tabs" role="tablist">
-   <button class="tab" role="tab" aria-selected="true" data-panel="login-panel">Login</button>
-   <button class="tab" role="tab" aria-selected="false" data-panel="register-panel">Register</button>
+   <button class="tab" id="loginTab" type="button" role="tab" aria-controls="login-panel" aria-selected="true" data-panel="login-panel">Login</button>
+   <button class="tab" id="registerTab" type="button" role="tab" aria-controls="register-panel" aria-selected="false" data-panel="register-panel">Register</button>
   </div>
-  <div id="login-panel" class="panel">
-   <form id="loginForm">
+  <div id="login-panel" class="panel" role="tabpanel" aria-labelledby="loginTab">
+   <form id="loginForm" novalidate>
+    <p id="loginStatus" class="form-status" role="status" aria-live="polite"></p>
     <div class="form-group"><label for="lrole">Login as</label>
      <select id="lrole"><option value="student">Student</option><option value="admin">Admin (Placement Cell)</option></select></div>
-    <div class="form-group"><label for="lemail">College Email</label><input type="email" id="lemail" autocomplete="email" maxlength="190" required><p class="error" id="lemailErr"></p></div>
-    <div class="form-group"><label for="lpass">Password</label><input type="password" id="lpass" autocomplete="current-password" minlength="8" maxlength="72" required><p class="error" id="lpassErr"></p></div>
-    <div class="form-group"><label><input type="checkbox" id="showPass" style="width:auto"> Show password</label></div>
+    <div class="form-group"><label for="lemail">Email</label><input type="email" id="lemail" autocomplete="email" maxlength="190" aria-describedby="lemailErr"><p class="error" id="lemailErr"></p></div>
+    <div class="form-group"><label for="lpass">Password</label><input type="password" id="lpass" autocomplete="current-password" minlength="8" maxlength="72" aria-describedby="lpassErr"><p class="error" id="lpassErr"></p></div>
+    <div class="auth-options">
+     <label class="auth-checkbox" for="showPass"><input type="checkbox" id="showPass"> Show password</label>
+     <label class="auth-checkbox" for="rememberMe"><input type="checkbox" id="rememberMe"> Remember me</label>
+    </div>
     <button class="btn" type="submit">Login</button>
+    <p class="auth-switch">New to Campus2Career? <button class="text-button" type="button" data-switch="register-panel">Create an account</button></p>
    </form>
   </div>
-  <div id="register-panel" class="panel" hidden>
-   <form id="registerForm">
-    <div class="form-group"><label for="rname">Full Name</label><input type="text" id="rname" minlength="2" maxlength="120" pattern="[A-Za-zÀ-ÿ][A-Za-zÀ-ÿ .'-]{1,119}" autocomplete="name" required><p class="error" id="rnameErr"></p></div>
-    <div class="form-group"><label for="rreg">Registration Number</label><input type="text" id="rreg" minlength="4" maxlength="20" pattern="[A-Za-z0-9-]{4,20}" required><p class="error" id="rregErr"></p></div>
-    <div class="form-group"><label for="rdept">Department</label><select id="rdept"><option>CSE</option><option>IT</option><option>ECE</option><option>MCA</option><option>Mechanical</option></select></div>
-    <div class="form-group"><label for="remail">College Email</label><input type="email" id="remail" maxlength="190" autocomplete="email" required><p class="error" id="remailErr"></p></div>
-    <div class="form-group"><label for="rpass">Password (8-72 characters)</label><input type="password" id="rpass" minlength="8" maxlength="72" autocomplete="new-password" required><p class="error" id="rpassErr"></p></div>
-    <div class="form-group"><label for="rconf">Confirm Password</label><input type="password" id="rconf" minlength="8" maxlength="72" autocomplete="new-password" required><p class="error" id="rconfErr"></p></div>
+  <div id="register-panel" class="panel" role="tabpanel" aria-labelledby="registerTab" hidden>
+   <form id="registerForm" novalidate>
+    <p id="registerStatus" class="form-status" role="status" aria-live="polite"></p>
+    <div class="form-group"><label for="rname">Full Name</label><input type="text" id="rname" minlength="2" maxlength="120" autocomplete="name" aria-describedby="rnameErr"><p class="error" id="rnameErr"></p></div>
+    <div class="form-group"><label for="rreg">Registration Number</label><input type="text" id="rreg" minlength="4" maxlength="20" aria-describedby="rregErr"><p class="error" id="rregErr"></p></div>
+    <div class="form-group"><label for="rdept">Department</label><select id="rdept"><option value="CSE">CSE</option><option value="IT">IT</option><option value="ECE">ECE</option><option value="MCA">MCA</option><option value="Mechanical">Mechanical</option></select></div>
+    <div class="form-group"><label for="remail">Email</label><input type="email" id="remail" maxlength="190" autocomplete="email" aria-describedby="remailErr"><p class="error" id="remailErr"></p></div>
+    <div class="form-group"><label for="rpass">Password</label><input type="password" id="rpass" minlength="8" maxlength="72" autocomplete="new-password" aria-describedby="rpassErr passwordStrengthText"><div class="strength-meter" role="meter" aria-label="Password strength" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><span id="passwordStrengthFill"></span></div><p id="passwordStrengthText" class="strength-text">Use at least 8 characters with uppercase, lowercase, number, and special character.</p><p class="error" id="rpassErr"></p></div>
+    <div class="form-group"><label for="rconf">Confirm Password</label><input type="password" id="rconf" minlength="8" maxlength="72" autocomplete="new-password" aria-describedby="rconfErr"><p class="error" id="rconfErr"></p></div>
+    <div class="form-group"><label class="auth-checkbox" for="showRegisterPass"><input type="checkbox" id="showRegisterPass"> Show passwords</label></div>
+    <div class="form-group"><label class="auth-checkbox" for="termsAccepted"><input type="checkbox" id="termsAccepted" aria-describedby="termsErr"> I agree to the Terms and Conditions.</label><p class="error" id="termsErr"></p></div>
     <button class="btn btn-green" type="submit">Create Account</button>
+    <p class="auth-switch">Already have an account? <button class="text-button" type="button" data-switch="login-panel">Log in</button></p>
    </form>
   </div>
  </div>

@@ -41,8 +41,10 @@
    <div class="form-group" style="margin-top:14px"><label for="certInput">Add a certification (press Enter)</label><input id="certInput" maxlength="150" pattern=".{1,150}" placeholder="e.g. NPTEL - Cloud Computing"></div>
    <ul id="certList"></ul></section>
   <section class="card" style="margin-top:18px" aria-labelledby="h4p"><h2 id="h4p">Resume</h2>
-   <div class="form-group"><label for="resume">Upload resume (PDF, max 2 MB)</label><input id="resume" type="file" accept=".pdf"><p class="error" id="resumeErr"></p></div>
-   <p id="resumeName">No file uploaded yet.</p><a id="resumeDownload" class="btn btn-outline btn-sm" href="api.php?action=resume-download" hidden>Download current resume</a></section>
+   <div class="form-group"><label for="resume">Upload or replace resume (PDF, max 2 MB)</label><input id="resume" type="file" accept=".pdf"><p class="error" id="resumeErr"></p></div>
+   <p id="resumeName" aria-live="polite">No resume uploaded yet. Choose a PDF file to upload.</p>
+   <p id="resumeCurrent" hidden>Your current resume is saved as a PDF. The file chooser stays empty until you select a replacement.</p>
+   <a id="resumeDownload" class="btn btn-outline btn-sm" href="api.php?action=resume-download" hidden>Download saved resume</a></section>
   <p style="margin-top:18px"><button class="btn" type="submit">Save Profile</button></p>
  </form>
 </div>
@@ -50,6 +52,6 @@
 <footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <script src="js/main.js?v=2"></script>
-<script src="js/profile.js"></script>
+<script src="js/profile.js?v=2"></script>
 </body>
 </html>
