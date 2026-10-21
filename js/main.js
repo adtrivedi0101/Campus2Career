@@ -94,7 +94,7 @@ function setupTabs() {
   });
 }
 
-if (!document.getElementById('loginForm')) loadSession().then(({ user, csrf }) => {
+if (!document.getElementById('loginForm') && !document.body.classList.contains('public-home')) loadSession().then(({ user, csrf }) => {
   csrfToken = csrf;
   document.querySelectorAll('#nav a').forEach(link => {
     const adminLink = link.getAttribute('href') === 'admin.html';
