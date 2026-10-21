@@ -349,3 +349,13 @@ details summary{cursor:pointer;color:var(--primary);font-weight:600;margin-top:8
  .hero h1{font-size:1.8rem}.hero .btn{display:block;margin:8px auto;max-width:260px}.hero .btn+.btn{margin-left:auto}
  .stepper{font-size:.7rem}
 }
+/* Simplified dashboard charts */
+.application-chart-layout{display:block;padding:8px 0}
+.application-donut,.readiness-ring{display:none}
+.application-legend{min-width:0;gap:0}
+.application-legend li{padding:8px 4px;border-bottom:1px solid #eef1f6}
+.readiness-bars{width:100%}
+.profile-ring{width:92px;height:72px;border-radius:10px;background:#dcfce7}
+.profile-ring:before{display:none}
+.profile-ring strong{color:#172554}
+.profile-ring span{color:#128477}
