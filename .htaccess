@@ -2,6 +2,6 @@ Options -Indexes
 RewriteEngine On
 RewriteRule ^(index|login|admin|applications|drives|profile|seniors|student-dashboard)\.html$ $1.php [L]
 
-<FilesMatch "^(config|db|auth_guard)\.php$">
+<FilesMatch "^(config|config\.local|db|auth_guard)\.php$">
     Require all denied
 </FilesMatch>

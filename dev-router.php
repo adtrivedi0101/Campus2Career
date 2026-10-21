@@ -6,7 +6,7 @@ if (!is_string($path)) {
 }
 
 $path = strtolower($path);
-if (in_array($path, ['/config.php', '/db.php', '/auth_guard.php'], true) ||
+if (in_array($path, ['/config.php', '/config.local.php', '/db.php', '/auth_guard.php'], true) ||
     preg_match('~(?:^|/)\.[^/]*~', $path)) {
     http_response_code(403);
     exit;
