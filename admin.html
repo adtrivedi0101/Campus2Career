@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin Panel | Campus2Career</title>
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 <!-- Page owner: Student 4 -->
@@ -13,10 +13,10 @@
  <div class="container header-inner">
   <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
-  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html" aria-current="page">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html" aria-current="page">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
  </div>
 </header>
-<main id="main">
+<main id="main" tabindex="-1">
 
 <div class="container">
  <h1 class="page-title">Placement Cell Admin</h1><p class="lead">Manage companies, drives and applications.</p>
@@ -24,35 +24,35 @@
   <div class="card stat"><strong>0</strong>Students</div><div class="card stat"><strong>0</strong>Companies</div>
   <div class="card stat"><strong>0</strong>Active drives</div><div class="card stat"><strong>0</strong>Applications</div>
  </div>
- <div class="tabs" role="tablist">
-  <button class="tab" role="tab" aria-selected="true" data-panel="p-comp">Companies</button>
-  <button class="tab" role="tab" aria-selected="false" data-panel="p-app">Applications</button>
-  <button class="tab" role="tab" aria-selected="false" data-panel="p-drive">Post Drive</button>
-  <button class="tab" role="tab" aria-selected="false" data-panel="p-note">Notify</button>
+ <div class="tabs" role="tablist" aria-label="Admin sections">
+  <button class="tab" id="companiesTab" type="button" role="tab" aria-controls="p-comp" aria-selected="true" data-panel="p-comp">Companies</button>
+  <button class="tab" id="applicationsTab" type="button" role="tab" aria-controls="p-app" aria-selected="false" data-panel="p-app">Applications</button>
+  <button class="tab" id="postDriveTab" type="button" role="tab" aria-controls="p-drive" aria-selected="false" data-panel="p-drive">Post Drive</button>
+  <button class="tab" id="notifyTab" type="button" role="tab" aria-controls="p-note" aria-selected="false" data-panel="p-note">Notify</button>
  </div>
- <div id="p-comp" class="panel card">
+ <div id="p-comp" class="panel card" role="tabpanel" aria-labelledby="companiesTab" tabindex="0">
   <form id="compForm" class="form-grid" style="grid-template-columns:1fr 1fr auto;align-items:end">
    <div class="form-group"><label for="cn">Company name</label><input id="cn" minlength="2" maxlength="150" required></div>
    <div class="form-group"><label for="cs">Sector</label><input id="cs" minlength="2" maxlength="100" required></div>
    <div class="form-group"><button class="btn" type="submit">Add</button></div></form>
-  <p class="error" id="compErr"></p>
-  <div class="table-wrap"><table><thead><tr><th scope="col">Company</th><th scope="col">Sector</th><th scope="col">Action</th></tr></thead><tbody id="compBody"></tbody></table></div></div>
- <div id="p-app" class="panel card" hidden><div class="table-wrap"><table><thead><tr><th scope="col">Student</th><th scope="col">Company</th><th scope="col">CGPA</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead><tbody id="appBody"></tbody></table></div></div>
- <div id="p-drive" class="panel card" hidden>
+  <p class="error" id="compErr" role="status" aria-live="polite"></p>
+  <div class="table-wrap"><table><caption class="visually-hidden">Companies and sectors</caption><thead><tr><th scope="col">Company</th><th scope="col">Sector</th><th scope="col">Action</th></tr></thead><tbody id="compBody"></tbody></table></div></div>
+ <div id="p-app" class="panel card" role="tabpanel" aria-labelledby="applicationsTab" tabindex="0" hidden><div class="table-wrap"><table><caption class="visually-hidden">Student placement applications</caption><thead><tr><th scope="col">Student</th><th scope="col">Company</th><th scope="col">CGPA</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead><tbody id="appBody"></tbody></table></div></div>
+ <div id="p-drive" class="panel card" role="tabpanel" aria-labelledby="postDriveTab" tabindex="0" hidden>
   <form id="driveForm"><div class="form-grid">
    <div class="form-group"><label for="dc">Company</label><input id="dc" minlength="2" maxlength="150" required></div><div class="form-group"><label for="dr">Role</label><input id="dr" minlength="2" maxlength="150" required></div>
    <div class="form-group"><label for="dp">Package</label><input id="dp" maxlength="80" placeholder="e.g. 6 LPA"></div><div class="form-group"><label for="dt">Drive type</label><select id="dt" required><option>Full-time</option><option>Internship</option></select></div>
    <div class="form-group"><label for="dg">Minimum CGPA</label><input id="dg" type="number" min="0" max="10" step="0.01" required></div><div class="form-group"><label for="db">Maximum backlogs allowed</label><input id="db" type="number" min="0" max="100" step="1" value="0" required></div>
    <div class="form-group"><label for="dl">Last date to apply</label><input id="dl" type="date" required></div></div>
-  <button class="btn" type="submit">Post Drive</button><p class="error" id="driveErr"></p></form></div>
- <div id="p-note" class="panel card" hidden>
+  <button class="btn" type="submit">Post Drive</button><p class="error" id="driveErr" role="status" aria-live="polite"></p></form></div>
+ <div id="p-note" class="panel card" role="tabpanel" aria-labelledby="notifyTab" tabindex="0" hidden>
   <form id="noteForm"><div class="form-group"><label for="nt">Send to</label><select id="nt" required><option>All students</option></select></div>
-  <div class="form-group"><label for="nm">Message</label><textarea id="nm" minlength="5" maxlength="1000" required></textarea><p class="error" id="nmErr"></p></div><button class="btn" type="submit">Send Notification</button></form></div>
+  <div class="form-group"><label for="nm">Message</label><textarea id="nm" minlength="5" maxlength="1000" required></textarea><p class="error" id="nmErr" role="status" aria-live="polite"></p></div><button class="btn" type="submit">Send Notification</button></form></div>
 </div>
 </main>
-<footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
+<footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal </div></footer>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-<script src="js/main.js?v=2"></script>
+<script src="js/main.js?v=4"></script>
 <script src="js/admin.js?v=3"></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 setupTabs();
+if (location.hash === '#register-panel') document.getElementById('registerTab').click();
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');

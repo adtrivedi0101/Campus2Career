@@ -7,6 +7,7 @@ function renderExperiences() {
   const shown = experiences.filter(item =>
     `${item.company} ${item.name}`.toLowerCase().includes(query) &&
     (!difficulty || item.difficulty === difficulty));
+  document.getElementById('experienceCount').textContent = `${shown.length} experience${shown.length === 1 ? '' : 's'} found`;
   const colors = { Easy: 'b-green', Medium: 'b-yellow', Hard: 'b-red' };
   document.getElementById('expList').innerHTML = shown.length ? shown.map(item => `<article class="card">
     <div class="row"><h2 style="font-size:1.2rem;margin:0">${escapeHtml(item.company)}</h2><span class="badge ${colors[item.difficulty]}">${escapeHtml(item.difficulty)}</span></div>
@@ -35,13 +36,20 @@ document.getElementById('shareForm').addEventListener('submit', async event => {
     experience: document.getElementById('xt').value.trim()
   };
   const errors = [
-    ['xnErr', data.name.length >= 2, 'Enter your name.'],
-    ['xbErr', /^20[0-9]{2}$/.test(data.batch), 'Enter a valid year like 2025.'],
-    ['xcErr', Boolean(data.company), 'Enter the company name.'],
-    ['xtErr', data.experience.length >= 30, 'Please write at least 30 characters.']
+    ['xn', 'xnErr', data.name.length >= 2, 'Enter your name.'],
+    ['xb', 'xbErr', /^20[0-9]{2}$/.test(data.batch), 'Enter a valid year like 2025.'],
+    ['xc', 'xcErr', data.company.length >= 2, 'Enter the company name.'],
+    ['xt', 'xtErr', data.experience.length >= 30, 'Please write at least 30 characters.']
   ];
-  errors.forEach(([id, valid, message]) => { document.getElementById(id).textContent = valid ? '' : message; });
-  if (errors.some(([, valid]) => !valid)) return;
+  errors.forEach(([fieldId, errorId, valid, message]) => {
+    document.getElementById(errorId).textContent = valid ? '' : message;
+    document.getElementById(fieldId).setAttribute('aria-invalid', String(!valid));
+  });
+  const firstInvalid = errors.find(([, , valid]) => !valid);
+  if (firstInvalid) {
+    document.getElementById(firstInvalid[0]).focus();
+    return;
+  }
   try {
     await api('experience', { method: 'POST', body: JSON.stringify(data) });
     event.currentTarget.reset();

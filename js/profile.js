@@ -24,12 +24,22 @@ function addTextItem(input, list, render, maxLength) {
   render();
 }
 document.getElementById('skillList').addEventListener('click', event => {
-  const index = event.target.dataset.index;
-  if (index !== undefined) { skills.splice(Number(index), 1); renderSkills(); }
+  const button = event.target.closest('button[data-index]');
+  if (!button) return;
+  const index = Number(button.dataset.index);
+  skills.splice(index, 1);
+  renderSkills();
+  (document.querySelectorAll('#skillList button')[Math.min(index, skills.length - 1)] ||
+    document.getElementById('skillInput')).focus();
 });
 document.getElementById('certList').addEventListener('click', event => {
-  const index = event.target.dataset.index;
-  if (index !== undefined) { certifications.splice(Number(index), 1); renderCertifications(); }
+  const button = event.target.closest('button[data-index]');
+  if (!button) return;
+  const index = Number(button.dataset.index);
+  certifications.splice(index, 1);
+  renderCertifications();
+  (document.querySelectorAll('#certList button')[Math.min(index, certifications.length - 1)] ||
+    document.getElementById('certInput')).focus();
 });
 document.getElementById('skillInput').addEventListener('keydown', event => {
   if (event.key === 'Enter') { event.preventDefault(); addTextItem(event.currentTarget, skills, renderSkills, 60); }
@@ -63,9 +73,11 @@ document.getElementById('resume').addEventListener('change', async event => {
   const file = event.currentTarget.files[0];
   const error = document.getElementById('resumeErr');
   error.textContent = '';
+  event.currentTarget.setAttribute('aria-invalid', 'false');
   if (!file) return;
   if (file.type !== 'application/pdf' || file.size > 2 * 1024 * 1024) {
     error.textContent = file.type !== 'application/pdf' ? 'Only PDF files are allowed.' : 'File must be smaller than 2 MB.';
+    event.currentTarget.setAttribute('aria-invalid', 'true');
     event.currentTarget.value = '';
     return;
   }
@@ -81,6 +93,7 @@ document.getElementById('resume').addEventListener('change', async event => {
     showToast('Resume uploaded.');
   } catch (uploadError) {
     error.textContent = uploadError.message;
+    event.currentTarget.setAttribute('aria-invalid', 'true');
     event.currentTarget.value = '';
     document.getElementById('resumeName').textContent = resumeUploaded
       ? 'Saved resume: PDF uploaded.'
@@ -96,7 +109,12 @@ document.getElementById('profileForm').addEventListener('submit', async event =>
   const cgpaOk = cgpa === '' || (Number(cgpa) >= 0 && Number(cgpa) <= 10);
   document.getElementById('pphoneErr').textContent = phoneOk ? '' : 'Enter a valid 10-digit mobile number.';
   document.getElementById('pcgpaErr').textContent = cgpaOk ? '' : 'CGPA must be between 0 and 10.';
-  if (!phoneOk || !cgpaOk) return;
+  document.getElementById('pphone').setAttribute('aria-invalid', String(!phoneOk));
+  document.getElementById('pcgpa').setAttribute('aria-invalid', String(!cgpaOk));
+  if (!phoneOk || !cgpaOk) {
+    document.getElementById(phoneOk ? 'pcgpa' : 'pphone').focus();
+    return;
+  }
   try {
     await api('profile', {
       method: 'POST',

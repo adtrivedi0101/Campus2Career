@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Profile | Campus2Career</title>
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
 <!-- Page owner: Student 2 -->
@@ -13,10 +13,10 @@
  <div class="container header-inner">
   <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
-  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html" aria-current="page">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html" aria-current="page">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html">Login</a></li></ul></nav>
  </div>
 </header>
-<main id="main">
+<main id="main" tabindex="-1">
 
 <div class="container">
  <h1 class="page-title">My Profile</h1><p class="lead">Keep your details updated. Companies see this when you apply.</p>
@@ -24,7 +24,7 @@
   <section class="card" aria-labelledby="h1p"><h2 id="h1p">Personal Details</h2>
    <div class="form-grid">
     <div class="form-group"><label for="pname">Full Name</label><input id="pname" readonly></div>
-    <div class="form-group"><label for="pphone">Phone</label><input id="pphone" type="tel" inputmode="numeric" autocomplete="tel" pattern="[6-9][0-9]{9}" minlength="10" maxlength="10" title="Enter a valid 10-digit mobile number." required><p class="error" id="pphoneErr"></p></div>
+    <div class="form-group"><label for="pphone">Phone</label><input id="pphone" type="tel" inputmode="numeric" autocomplete="tel" pattern="[6-9][0-9]{9}" minlength="10" maxlength="10" title="Enter a valid 10-digit mobile number." aria-describedby="pphoneErr" required><p class="error" id="pphoneErr"></p></div>
     <div class="form-group"><label for="pemail">Email</label><input id="pemail" type="email" readonly></div>
     <div class="form-group"><label for="pdept">Department</label><input id="pdept" readonly></div>
    </div></section>
@@ -32,7 +32,7 @@
    <div class="form-grid">
     <div class="form-group"><label for="p10">10th Percentage</label><input id="p10" type="number" min="0" max="100" step="0.01" inputmode="decimal"></div>
     <div class="form-group"><label for="p12">12th Percentage</label><input id="p12" type="number" min="0" max="100" step="0.01" inputmode="decimal"></div>
-    <div class="form-group"><label for="pcgpa">Current CGPA</label><input id="pcgpa" type="number" min="0" max="10" step="0.01" inputmode="decimal"><p class="error" id="pcgpaErr"></p></div>
+    <div class="form-group"><label for="pcgpa">Current CGPA</label><input id="pcgpa" type="number" min="0" max="10" step="0.01" inputmode="decimal" aria-describedby="pcgpaErr"><p class="error" id="pcgpaErr"></p></div>
     <div class="form-group"><label for="pback">Active Backlogs</label><input id="pback" type="number" min="0" max="100" step="1" value="0"></div>
    </div></section>
   <section class="card" style="margin-top:18px" aria-labelledby="h3p"><h2 id="h3p">Skills and Certifications</h2>
@@ -41,7 +41,7 @@
    <div class="form-group" style="margin-top:14px"><label for="certInput">Add a certification (press Enter)</label><input id="certInput" maxlength="150" pattern=".{1,150}" placeholder="e.g. NPTEL - Cloud Computing"></div>
    <ul id="certList"></ul></section>
   <section class="card" style="margin-top:18px" aria-labelledby="h4p"><h2 id="h4p">Resume</h2>
-   <div class="form-group"><label for="resume">Upload or replace resume (PDF, max 2 MB)</label><input id="resume" type="file" accept=".pdf"><p class="error" id="resumeErr"></p></div>
+   <div class="form-group"><label for="resume">Upload or replace resume (PDF, max 2 MB)</label><input id="resume" type="file" accept=".pdf" aria-describedby="resumeErr"><p class="error" id="resumeErr" aria-live="polite"></p></div>
    <p id="resumeName" aria-live="polite">No resume uploaded yet. Choose a PDF file to upload.</p>
    <p id="resumeCurrent" hidden>Your current resume is saved as a PDF. The file chooser stays empty until you select a replacement.</p>
    <a id="resumeDownload" class="btn btn-outline btn-sm" href="api.php?action=resume-download" hidden>Download saved resume</a></section>
@@ -51,7 +51,7 @@
 </main>
 <footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-<script src="js/main.js?v=2"></script>
-<script src="js/profile.js?v=2"></script>
+<script src="js/main.js?v=4"></script>
+<script src="js/profile.js?v=3"></script>
 </body>
 </html>

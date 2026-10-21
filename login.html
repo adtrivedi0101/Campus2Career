@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login / Register | Campus2Career</title>
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
 <!-- Page owner: Student 1 -->
@@ -13,16 +13,16 @@
  <div class="container header-inner">
   <a class="logo" href="index.html" aria-label="Campus2Career home"><span class="logo-mark" aria-hidden="true">C2C</span>Campus2Career</a>
   <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Toggle navigation menu">&#9776;</button>
-  <nav id="nav" aria-label="Main navigation"><ul><li><a href="index.html">Home</a></li><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html" aria-current="page">Login</a></li></ul></nav>
+  <nav id="nav" aria-label="Main navigation"><ul><li><a href="student-dashboard.html">Dashboard</a></li><li><a href="profile.html">Profile</a></li><li><a href="drives.html">Drives</a></li><li><a href="applications.html">Applications</a></li><li><a href="seniors.html">Seniors</a></li><li><a href="admin.html">Admin</a></li><li><a href="login.html" aria-current="page">Login</a></li></ul></nav>
  </div>
 </header>
-<main id="main">
+<main id="main" tabindex="-1">
 
 <div class="container" style="max-width:520px">
  <h1 class="page-title">Welcome to Campus2Career</h1>
  <p class="lead">Login to continue or create a new student account.</p>
  <div class="card">
-  <div class="tabs" role="tablist">
+  <div class="tabs" role="tablist" aria-label="Account access">
    <button class="tab" id="loginTab" type="button" role="tab" aria-controls="login-panel" aria-selected="true" data-panel="login-panel">Login</button>
    <button class="tab" id="registerTab" type="button" role="tab" aria-controls="register-panel" aria-selected="false" data-panel="register-panel">Register</button>
   </div>
@@ -61,7 +61,7 @@
 </main>
 <footer class="site-footer"><div class="container">&copy; <span id="year"></span> Campus2Career &ndash; College Placement Portal | Web Technologies Mini Project</div></footer>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-<script src="js/main.js?v=2"></script>
+<script src="js/main.js?v=4"></script>
 <script src="js/auth.js"></script>
 </body>
 </html>

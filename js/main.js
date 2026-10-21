@@ -37,6 +37,17 @@ if (navToggle && nav) {
     navToggle.setAttribute('aria-expanded', open);
   });
 }
+const skipLink = document.querySelector('.skip-link');
+if (skipLink) {
+  skipLink.addEventListener('click', event => {
+    const target = document.getElementById(skipLink.hash.slice(1));
+    if (!target) return;
+    event.preventDefault();
+    target.focus();
+    target.scrollIntoView();
+    history.replaceState(null, '', skipLink.hash);
+  });
+}
 const year = document.getElementById('year');
 if (year) year.textContent = new Date().getFullYear();
 
@@ -50,11 +61,37 @@ function showToast(message) {
 }
 
 function setupTabs() {
-  const tabs = document.querySelectorAll('.tab');
-  tabs.forEach(tab => tab.addEventListener('click', () => {
-    tabs.forEach(item => item.setAttribute('aria-selected', String(item === tab)));
-    document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.id !== tab.dataset.panel; });
-  }));
+  document.querySelectorAll('.tabs').forEach(tabList => {
+    const tabs = Array.from(tabList.querySelectorAll('[role="tab"]'));
+    const activate = (selectedTab, moveFocus = false) => {
+      tabs.forEach(tab => {
+        const selected = tab === selectedTab;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        const panel = document.getElementById(tab.dataset.panel);
+        if (panel) panel.hidden = !selected;
+      });
+      if (moveFocus) selectedTab.focus();
+    };
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => activate(tab));
+      tab.addEventListener('keydown', event => {
+        const currentIndex = tabs.indexOf(tab);
+        let nextIndex;
+        if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') nextIndex = 0;
+        if (event.key === 'End') nextIndex = tabs.length - 1;
+        if (nextIndex === undefined) return;
+        event.preventDefault();
+        activate(tabs[nextIndex], true);
+      });
+    });
+
+    const selectedTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true') || tabs[0];
+    if (selectedTab) activate(selectedTab);
+  });
 }
 
 if (!document.getElementById('loginForm')) loadSession().then(({ user, csrf }) => {
